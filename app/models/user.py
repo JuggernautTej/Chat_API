@@ -1,6 +1,7 @@
 """User Table Model."""
 from app.db.database import Base
 from sqlalchemy import Boolean, Column, DateTime, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
@@ -8,11 +9,11 @@ import uuid
 class User(Base):
     """User table"""
     __tablename__ = "users"
-    id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
-    username = Column(String, unique=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4())
+    username = Column(String, unique=True, index=True, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
-    email = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     is_online = Column(Boolean, default=False)
@@ -29,4 +30,4 @@ class User(Base):
     created_groups = relationship("Group", foreign_keys="Group.creator_id", back_populates="creator")
 
     # Many to Many Relationship with groups
-    groups = relationship("Group", back_populates="members")
+    groups = relationship("GroupMember", back_populates="user")
