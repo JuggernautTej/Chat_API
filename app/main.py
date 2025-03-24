@@ -1,36 +1,50 @@
 """The main entry point of the application."""
 
-from fastapi import FastAPI
 from app.api.routes import users, auth, friends, messages, groups, notifications
 from app.core.config import settings
-from app.db.database import engine, Base
-from contextlib import asynccontextmanager
+from app.core.events import create_start_app_handler, create_stop_app_handler
+from app.db.init_db import init_db
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 
-# Create the database tables
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Lifespan function to initialize and cleanup resources."""
-    print("Staring up the application...")
-    async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-    yield # Application runs here
-    print("Shutting down the application...")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all) # Drop the tables
 
-# Initialize the FastAPI app
-app = FastAPI(lifespan=lifespan)
+def create_application() -> FastAPI:
+    """Create the FastAPI application."""
+    application = FastAPI(
+        title=settings.PROJECT_NAME,
+        openapi_url=f"{settings.API_V1_STR}/openapi.json"
+    )
 
-# Include the routers
-app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(friends.router, prefix="/friends", tags=["Friends"])
-app.include_router(messages.router, prefix="/messages", tags=["Messages"])
-app.include_router(groups.router, prefix="/groups", tags=["Groups"])
-app.include_router(notifications.router, prefix="/notifications", tags=["Notifications"])
+    # Set up CORS
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-# Root endpoint
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the Chat API!"}
+    # Set up event handlers
+    application.add_event_handler("startup", create_start_app_handler(application))
+    application.add_event_handler("shutdown", create_stop_app_handler(application))
+
+    # Run init_db on startup
+    application.add_event_handler("startup", lambda: asyncio.create_task(init_db()))
+    
+    # Include the routers
+    application.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["Authentication"])
+    application.include_router(users.router, prefix=f"{settings.API_V1_STR}/users", tags=["Users"])
+    application.include_router(friends.router, prefix=f"{settings.API_V1_STR}/friends", tags=["Friends"])
+    application.include_router(messages.router, prefix=f"{settings.API_V1_STR}/messages", tags=["Messages"])
+    application.include_router(groups.router, prefix=f"{settings.API_V1_STR}/groups", tags=["Groups"])
+    application.include_router(notifications.router, prefix=f"{settings.API_V1_STR}/notifications", tags=["Notifications"])
+
+    return application
+
+app = create_application()
+
+# This allows running the application using uvicorn
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
