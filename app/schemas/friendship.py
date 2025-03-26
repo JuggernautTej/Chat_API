@@ -1,7 +1,7 @@
 """Friendship schema module."""
 from enum import Enum
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional
 
 
@@ -14,13 +14,13 @@ class FriendshipStatus(str, Enum):
 
 class FriendshipBase(BaseModel):
     """This class defines the shared properties for a friendship."""
-    sender_id: str
-    receiver_id: str
+    sender_id: UUID4
+    receiver_id: UUID4
     status: Optional[FriendshipStatus] = FriendshipStatus.PENDING
 
 class FriendshipCreate(FriendshipBase):
     """Friendship create class."""
-    receiver_id: str
+    receiver_id: UUID4
 
 class FriendshipUpdate(FriendshipBase):
     """This class updates the friendship status."""
@@ -28,9 +28,9 @@ class FriendshipUpdate(FriendshipBase):
 
 class FriendshipInDBBase(FriendshipBase):
     """This class is used in storing friendship data in the database."""
-    id: str
-    sender_id: str
-    receiver_id: str
+    id: UUID4
+    sender_id: UUID4
+    receiver_id: UUID4
     status: FriendshipStatus
     created_at: datetime
     updated_at: Optional[datetime] = None

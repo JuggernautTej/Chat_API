@@ -1,7 +1,7 @@
 """Pydantic schemas for user."""
 
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, UUID4
 from typing import Optional
 
 
@@ -30,7 +30,7 @@ class UserUpdate(UserBase):
 # Properties shared by models stored in DB
 class UserInDBBase(UserBase):
     """This extends UserBase and adds fields for user models stored in the database."""
-    id: str
+    id: UUID4
     created_at: datetime
     updated_at: Optional[datetime] = None
 

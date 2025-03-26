@@ -1,7 +1,7 @@
 """ """
 
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional, List
 
 class GroupBase(BaseModel):
@@ -12,7 +12,7 @@ class GroupBase(BaseModel):
 
 class GroupCreate(GroupBase):
     """Create group class."""
-    member_ids: Optional[List[str]] = []
+    member_id: Optional[List[UUID4]] = []
 
 class GroupUpdate(BaseModel):
     """Update group class."""
@@ -22,7 +22,7 @@ class GroupUpdate(BaseModel):
 
 class GroupInDBBase(GroupBase):
     """Base class for group stored in database."""
-    id: str
+    id: UUID4
     created_at: datetime
     updated_at: Optional[datetime] = None
 
@@ -40,7 +40,7 @@ class GroupMemberBase(BaseModel):
 
 class GroupMemberCreate(GroupMemberBase):
     """Create group member class."""
-    user_id: str
+    user_id: UUID4
 
 class GroupMemberUpdate(BaseModel):
     """Update group member class."""
@@ -48,9 +48,9 @@ class GroupMemberUpdate(BaseModel):
 
 class GroupMemberInDBBase(GroupMemberBase):
     """Base class for group member stored in database."""
-    id: str
-    group_id: str
-    user_id: str
+    id: UUID4
+    group_id: UUID4
+    user_id: UUID4
     is_admin: bool
     joined_at: datetime
 

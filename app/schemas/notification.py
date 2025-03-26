@@ -2,7 +2,7 @@
 
 from enum import Enum
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional
 
 
@@ -22,11 +22,11 @@ class NotificationBase(BaseModel):
 
 class NotificationCreate(NotificationBase):
     """Notification create class."""
-    user_id: str
-    sender_id: Optional[str] = None
-    group_id: Optional[str] = None
-    message_id: Optional[str] = None
-    friendship_id: Optional[str] = None
+    user_id: UUID4
+    sender_id: Optional[UUID4] = None
+    group_id: Optional[UUID4] = None
+    message_id: Optional[UUID4] = None
+    friendship_id: Optional[UUID4] = None
 
 class NotificationUpdate(NotificationBase):
     """This class updates the notification status."""
@@ -34,12 +34,12 @@ class NotificationUpdate(NotificationBase):
 
 class NotificationInDBBase(NotificationBase):
     """This class is used in storing notification data in the database."""
-    id: str
-    user_id: str
-    sender_id: Optional[str] = None
-    group_id: Optional[str] = None
-    message_id: Optional[str] = None
-    friendship_id: Optional[str] = None
+    id: UUID4
+    user_id: UUID4
+    sender_id: Optional[UUID4] = None
+    group_id: Optional[UUID4] = None
+    message_id: Optional[UUID4] = None
+    friendship_id: Optional[UUID4] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
