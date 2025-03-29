@@ -1,4 +1,4 @@
-"""Something about token schema."""
+"""Script that defines the structure of a token."""
 
 from enum import Enum
 from datetime import datetime
