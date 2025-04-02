@@ -1,5 +1,6 @@
 """This script houses the configuration settings for the chat app."""
-from pydantic import BaseSettings, EmailStr, PostgresDsn
+from pydantic import EmailStr, PostgresDsn
+from pydantic_settings import BaseSettings
 from typing import Optional
 
 

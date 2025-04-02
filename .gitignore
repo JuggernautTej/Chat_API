@@ -32,6 +32,10 @@ wheels/
 *.sqlite3
 *.sqlite
 
+# Alembic migrations
+alembic/
+alembic.ini
+
 # IDEs and editors
 .idea/
 .vscode/

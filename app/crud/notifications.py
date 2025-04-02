@@ -89,6 +89,7 @@ async def delete_notification(db: AsyncSession, notification_id: UUID) -> Option
 # The code is also designed to handle potential errors gracefully, ensuring that the application can respond appropriately to various scenarios, such as missing notifications or database issues.
 # Overall, this code provides a solid foundation for managing notifications in a web application, with a focus on performance and usability.
 # To-do:
+# - Add marking all notifications as read at once for a user
 # - Add more detailed error handling and logging.
 # - Implement unit tests for each CRUD operation.
 # - Consider adding more filtering options for notifications (e.g., by type).

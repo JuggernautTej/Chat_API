@@ -7,9 +7,20 @@ from sqlalchemy.orm import sessionmaker
 from typing import AsyncGenerator
 
 
+# Base class for the database
+Base = declarative_base()
+
+# Import modules for Alembic to detect
+from app.models.friendship import Friendship
+from app.models.group import Group, GroupMember
+from app.models.messages import Message
+from app.models.notification import Notification
+from app.models.user import User
+
+
 # Database asynchronous connection settings
 engine = create_async_engine(
-    settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
+    str(settings.DATABASE_URL),
     pool_size=20,
     max_overflow=0, echo=True)
 
@@ -17,9 +28,6 @@ engine = create_async_engine(
 async_session_maker = sessionmaker(
     autocommit=False, autoflush=False, bind=engine,
     class_=AsyncSession)
-
-# Base class for the database
-Base = declarative_base()
 
 # Dependency to get the async database session
 async def get_db() -> AsyncGenerator[AsyncSession, None]:

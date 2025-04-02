@@ -20,7 +20,7 @@ class Message(Base):
     attachment_id = Column(UUID(as_uuid=True), ForeignKey("attachments.id", ondelete="SET NULL"), nullable=True)
     is_read = Column(Boolean, default=False)
     is_edited = Column(Boolean, default=False)
-    reply_to_message_id = Column(String, ForeignKey("messages.id"), nullable=True)
+    reply_to_message_id = Column(UUID, ForeignKey("messages.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     edited_at = Column(DateTime(timezone=True), onupdate=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
